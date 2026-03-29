@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Weather</title>
+  <meta name="theme-color" id="theme-color-meta" content="#1a6fd4">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Weather">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <style>
     /* ── Reset & Base ────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -509,10 +516,18 @@
       shell.style.display = 'flex';
     }
 
+    const THEME_COLORS = {
+      'clear-day':   '#1a6fd4', 'clear-night': '#0d1b3e',
+      'cloudy':      '#4a6580', 'fog':         '#6b7b8d',
+      'drizzle':     '#3a5068', 'rain':        '#2c3e50',
+      'snow':        '#6b8ea8', 'thunderstorm':'#1a1a2e',
+    };
+
     function applyTheme(theme) {
       const night = isNightTime();
       const key   = (night && theme === 'clear') ? 'clear-night' : theme;
       document.body.className = 'theme-' + key;
+      document.getElementById('theme-color-meta').content = THEME_COLORS[key] || '#1a6fd4';
     }
 
     function renderHero(w, idx, wmoEntry) {
@@ -698,6 +713,34 @@
     document.getElementById('zip-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') handleSearch(e.target.value);
     });
+
+    // ── PWA: Service Worker ─────────────────────────────────────────────────
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+
+    // ── PWA: Apple Touch Icon (generated via canvas) ────────────────────────
+    (function () {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+        <rect width="180" height="180" rx="40" fill="#1a6fd4"/>
+        <text x="90" y="128" font-size="96" text-anchor="middle"
+          font-family="Apple Color Emoji,Segoe UI Emoji,sans-serif">⛅</text>
+      </svg>`;
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const url  = URL.createObjectURL(blob);
+      const img  = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 180;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        const link = document.createElement('link');
+        link.rel  = 'apple-touch-icon';
+        link.href = canvas.toDataURL('image/png');
+        document.head.appendChild(link);
+      };
+      img.src = url;
+    })();
   </script>
 </body>
 </html>
