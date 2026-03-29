@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect 4 — Power Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0f0f1a;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #ff4e50, #f9d423, #56ccf2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 14px; }
+
+  /* ── Mode selector ── */
+  .mode-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 4px;
+    border: 1px solid #333;
+  }
+  .mode-btn {
+    padding: 7px 18px;
+    border-radius: 7px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: transparent;
+    color: #888;
+    transition: background 0.2s, color 0.2s;
+  }
+  .mode-btn.active { background: #2d2d4e; color: #fff; }
+
+  .game-wrap {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .player-card {
+    border-radius: 12px;
+    padding: 14px;
+    background: #1a1a2e;
+    border: 2px solid transparent;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .player-card.active-p1 { border-color: #ff4e50; box-shadow: 0 0 14px #ff4e5055; }
+  .player-card.active-p2 { border-color: #56ccf2; box-shadow: 0 0 14px #56ccf255; }
+
+  .player-name {
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .dot-p1 { background: #ff4e50; box-shadow: 0 0 8px #ff4e50; }
+  .dot-p2 { background: #56ccf2; box-shadow: 0 0 8px #56ccf2; }
+
+  .score-label { font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .score-val { font-size: 1.6rem; font-weight: 700; }
+
+  /* ── Powerup card ── */
+  .powerup-area {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid #333;
+  }
+  .powerup-title { font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+
+  .powerup-card {
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-bottom: 6px;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .powerup-card:hover:not(.used):not(.inactive) { transform: scale(1.03); }
+  .powerup-card.used, .powerup-card.inactive { opacity: 0.35; cursor: default; }
+  .powerup-card.selected { box-shadow: 0 0 16px 4px currentColor; }
+
+  .powerup-icon { font-size: 1.3rem; }
+  .powerup-name { font-weight: 700; font-size: 0.85rem; }
+  .powerup-desc { font-size: 0.7rem; color: #aaa; margin-top: 2px; line-height: 1.3; }
+
+  .powerup-badge {
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.15);
+    padding: 1px 6px;
+    border-radius: 99px;
+  }
+
+  .no-powerup { color: #555; font-size: 0.8rem; text-align: center; padding: 10px 0; }
+
+  /* ── Status bar ── */
+  .status-bar {
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 10px 16px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid #333;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 480px;
+  }
+
+  /* ── Board ── */
+  .board-section { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+  .column-arrows { display: flex; gap: 6px; }
+  .col-btn {
+    width: 66px;
+    height: 28px;
+    background: #222;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .col-btn:hover { background: #444; }
+  .col-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .board {
+    background: #1565c0;
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 8px 32px #0008;
+    display: grid;
+    grid-template-columns: repeat(7, 66px);
+    grid-template-rows: repeat(6, 66px);
+    gap: 6px;
+  }
+
+  .cell {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: #0f0f1a;
+    position: relative;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .cell.p1 { background: #ff4e50; box-shadow: inset 0 -4px 8px #0004, 0 0 10px #ff4e5066; }
+  .cell.p2 { background: #56ccf2; box-shadow: inset 0 -4px 8px #0004, 0 0 10px #56ccf266; }
+  .cell.win-flash { animation: winFlash 0.6s infinite alternate; }
+  .cell.shield { box-shadow: inset 0 -4px 8px #0004, 0 0 14px #f9d423, 0 0 0 3px #f9d423; }
+
+  @keyframes winFlash { from { filter: brightness(1); } to { filter: brightness(1.8) saturate(2); } }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 10px; }
+  button.action-btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  button.action-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-restart { background: #f9d423; color: #0f0f1a; }
+  .btn-cancel  { background: #555; color: #fff; }
+
+  /* ── Drop animation ── */
+  @keyframes dropIn {
+    from { transform: translateY(-400px); opacity: 0.6; }
+    to   { transform: translateY(0);      opacity: 1; }
+  }
+  .dropping { animation: dropIn 0.35s cubic-bezier(.17,.67,.35,1.1) forwards; }
+
+  /* ── Thinking dots ── */
+  @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
+  .thinking-dot { display: inline-block; animation: blink 1.4s infinite; }
+  .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+  .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #222;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform 0.3s;
+    pointer-events: none;
+    z-index: 100;
+    white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Modal ── */
+  .modal-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: #000a;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: #1a1a2e;
+    border-radius: 16px;
+    padding: 32px 40px;
+    text-align: center;
+    max-width: 340px;
+    border: 2px solid #333;
+  }
+  .modal h2 { font-size: 1.8rem; margin-bottom: 6px; }
+  .modal p  { color: #aaa; margin-bottom: 20px; font-size: 0.9rem; }
+  .modal .winner-dot { font-size: 3rem; }
+</style>
+</head>
+<body>
+
+<h1>CONNECT 4</h1>
+<div class="subtitle">Power Edition — Surprise powerups every turn</div>
+
+<div class="mode-selector">
+  <button class="mode-btn" id="btn-mode-human" onclick="setMode(false)">👥 vs Human</button>
+  <button class="mode-btn active" id="btn-mode-cpu" onclick="setMode(true)">🤖 vs Computer</button>
+</div>
+
+<div class="game-wrap">
+
+  <!-- Left sidebar: Player 1 -->
+  <div class="sidebar">
+    <div class="player-card" id="card-p1">
+      <div class="player-name"><div class="dot dot-p1"></div> Player 1</div>
+      <div class="score-label">Score</div>
+      <div class="score-val" id="score-p1">0</div>
+    </div>
+    <div class="powerup-area">
+      <div class="powerup-title">P1 Powerup</div>
+      <div id="powerup-p1"><div class="no-powerup">Waiting…</div></div>
+    </div>
+  </div>
+
+  <!-- Board -->
+  <div class="board-section">
+    <div id="status-bar" class="status-bar">Player 1's turn</div>
+    <div class="column-arrows" id="col-arrows"></div>
+    <div class="board" id="board"></div>
+    <div class="btn-row">
+      <button class="action-btn btn-restart" onclick="initGame()">New Game</button>
+      <button class="action-btn btn-cancel" id="btn-cancel-power" style="display:none" onclick="cancelPowerup()">Cancel Powerup</button>
+    </div>
+  </div>
+
+  <!-- Right sidebar: Player 2 -->
+  <div class="sidebar">
+    <div class="player-card" id="card-p2">
+      <div class="player-name"><div class="dot dot-p2"></div> <span id="p2-label">Computer</span></div>
+      <div class="score-label">Score</div>
+      <div class="score-val" id="score-p2">0</div>
+    </div>
+    <div class="powerup-area">
+      <div class="powerup-title">P2 Powerup</div>
+      <div id="powerup-p2"><div class="no-powerup">Waiting…</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Win modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="winner-dot" id="modal-icon"></div>
+    <h2 id="modal-title"></h2>
+    <p id="modal-body"></p>
+    <button class="action-btn btn-restart" onclick="initGame()">Play Again</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────────
+const ROWS = 6, COLS = 7;
+
+const POWERUP_DEFS = [
+  { id:'bomb',       name:'Bomb',        icon:'💣', color:'#f9d423', desc:'Click any piece to blast it and its 8 neighbours.', uses:1, target:'cell' },
+  { id:'doubleshot', name:'Double Drop', icon:'2️⃣', color:'#a29bfe', desc:'Drop two pieces this turn (pick columns twice).',   uses:1, target:'auto' },
+  { id:'colclear',   name:'Column Wipe', icon:'🌊', color:'#00cec9', desc:'Choose a column to completely clear it.',            uses:1, target:'col'  },
+  { id:'rowclear',   name:'Row Blast',   icon:'💥', color:'#fd79a8', desc:'Choose any row to wipe it clean.',                  uses:1, target:'row'  },
+  { id:'steal',      name:'Steal',       icon:'🪄', color:'#e17055', desc:'Convert one enemy piece to your colour.',           uses:1, target:'enemy'},
+  { id:'shield',     name:'Shield',      icon:'🛡️', color:'#fdcb6e', desc:'Protect one of your pieces from powerup attacks.', uses:1, target:'own'  },
+  { id:'extraturn',  name:'Extra Turn',  icon:'⏩', color:'#55efc4', desc:'Grants an extra turn after this one.',              uses:1, target:'auto' },
+  { id:'gravity',    name:'Anti-Gravity',icon:'🔄', color:'#74b9ff', desc:'Flip the board — pieces fall the other way!',      uses:1, target:'auto' },
+  { id:'refill',     name:'Refill',      icon:'🎲', color:'#b2bec3', desc:'Discard and immediately draw a new powerup.',       uses:1, target:'auto' },
+];
+
+// ── State ──────────────────────────────────────────────────────────────────
+let board, currentPlayer, scores, gameOver, gravityFlipped;
+let powerups;
+let activePowerup;
+let doubleShotPending;
+let extraTurnPending;
+let shieldedCells;
+let vsComputer = true;
+let aiThinking  = false;
+
+// ── Mode toggle ────────────────────────────────────────────────────────────
+function setMode(cpu) {
+  vsComputer = cpu;
+  document.getElementById('btn-mode-cpu').classList.toggle('active', cpu);
+  document.getElementById('btn-mode-human').classList.toggle('active', !cpu);
+  document.getElementById('p2-label').textContent = cpu ? 'Computer' : 'Player 2';
+  scores = { 1: 0, 2: 0 };
+  initGame();
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+function initGame() {
+  board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+  currentPlayer = 1;
+  gameOver      = false;
+  gravityFlipped = false;
+  activePowerup  = null;
+  doubleShotPending = 0;
+  extraTurnPending  = false;
+  shieldedCells = new Set();
+  powerups = { 1: null, 2: null };
+  aiThinking = false;
+  closeModal();
+  renderBoard();
+  renderArrows();
+  updateSidebars();
+  rollPowerup(1);
+  updateStatus();
+  document.getElementById('btn-cancel-power').style.display = 'none';
+}
+
+// ── Powerup generation ─────────────────────────────────────────────────────
+function rollPowerup(player) {
+  const def = POWERUP_DEFS[Math.floor(Math.random() * POWERUP_DEFS.length)];
+  powerups[player] = { ...def, used: false, selected: false };
+  renderPowerupCard(player);
+}
+
+// ── Board rendering ────────────────────────────────────────────────────────
+function renderBoard() {
+  const boardEl = document.getElementById('board');
+  boardEl.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      const val = board[r][c];
+      if (val === 1) cell.classList.add('p1');
+      if (val === 2) cell.classList.add('p2');
+      if (shieldedCells.has(`${r},${c}`)) cell.classList.add('shield');
+      cell.addEventListener('click', onCellClick);
+      boardEl.appendChild(cell);
+    }
+  }
+}
+
+function renderArrows() {
+  const arrowEl = document.getElementById('col-arrows');
+  arrowEl.innerHTML = '';
+  for (let c = 0; c < COLS; c++) {
+    const btn = document.createElement('button');
+    btn.className = 'col-btn';
+    btn.textContent = '▼';
+    btn.dataset.col = c;
+    btn.addEventListener('click', () => onColClick(c));
+    arrowEl.appendChild(btn);
+  }
+}
+
+function updateArrows() {
+  const isHumanTurn = !vsComputer || currentPlayer === 1;
+  document.querySelectorAll('.col-btn').forEach(btn => {
+    const c = parseInt(btn.dataset.col);
+    btn.disabled = gameOver || aiThinking || !isHumanTurn
+                || (activePowerup && activePowerup.def.target !== 'col')
+                || (!activePowerup && isColFull(c));
+    btn.textContent = (activePowerup && activePowerup.def.target === 'col')
+      ? '💥' : (gravityFlipped ? '▲' : '▼');
+  });
+}
+
+// ── Powerup card rendering ─────────────────────────────────────────────────
+function renderPowerupCard(player) {
+  const el = document.getElementById(`powerup-p${player}`);
+  const p  = powerups[player];
+  if (!p) { el.innerHTML = '<div class="no-powerup">Waiting…</div>'; return; }
+
+  const isHumanTurn = !vsComputer || currentPlayer === 1;
+  const isActive = currentPlayer === player && !gameOver && !aiThinking
+                && (player === 1 || !vsComputer);
+  const card = document.createElement('div');
+  card.className = 'powerup-card' +
+    (p.used    ? ' used'     : '') +
+    (!isActive ? ' inactive' : '') +
+    (p.selected? ' selected' : '');
+  card.style.borderColor = p.color;
+  card.style.background  = `${p.color}18`;
+  card.style.color       = p.color;
+  card.innerHTML = `
+    <div class="powerup-icon">${p.icon}</div>
+    <div class="powerup-name">${p.name}</div>
+    <div class="powerup-desc">${p.desc}</div>
+    <div class="powerup-badge">${p.uses}×</div>
+  `;
+  if (isActive && !p.used) {
+    card.addEventListener('click', () => activatePowerup(player));
+  }
+  el.innerHTML = '';
+  el.appendChild(card);
+}
+
+function updateSidebars() {
+  document.getElementById('score-p1').textContent = scores ? scores[1] : 0;
+  document.getElementById('score-p2').textContent = scores ? scores[2] : 0;
+  document.getElementById('card-p1').className = 'player-card' + (currentPlayer===1 && !gameOver ? ' active-p1' : '');
+  document.getElementById('card-p2').className = 'player-card' + (currentPlayer===2 && !gameOver ? ' active-p2' : '');
+  renderPowerupCard(1);
+  renderPowerupCard(2);
+  updateArrows();
+}
+
+function updateStatus() {
+  const el = document.getElementById('status-bar');
+  if (gameOver) { el.textContent = ''; return; }
+  const dot = currentPlayer === 1 ? '🔴' : '🔵';
+
+  if (vsComputer && currentPlayer === 2 && aiThinking) {
+    el.innerHTML = `🤖 Computer is thinking<span class="thinking-dot">.</span><span class="thinking-dot">.</span><span class="thinking-dot">.</span>`;
+    return;
+  }
+  if (activePowerup) {
+    const t   = activePowerup.def.target;
+    const msg = t==='cell'  ? 'Click any piece (bomb target)'
+              : t==='col'   ? 'Click a column arrow to wipe it'
+              : t==='row'   ? 'Click any cell in the row to blast it'
+              : t==='enemy' ? 'Click an enemy piece to steal it'
+              : t==='own'   ? 'Click your own piece to shield it'
+              : '';
+    el.innerHTML = `${dot} <b style="color:${activePowerup.def.color}">${activePowerup.def.icon} ${activePowerup.def.name}:</b> ${msg}`;
+    return;
+  }
+  if (doubleShotPending > 0) {
+    const name = (vsComputer && currentPlayer === 2) ? 'Computer' : `Player ${currentPlayer}`;
+    el.innerHTML = `${dot} ${name} — drop again! (${doubleShotPending} left)`;
+    return;
+  }
+  const name = (vsComputer && currentPlayer === 2) ? 'Computer' : `Player ${currentPlayer}`;
+  el.innerHTML = `${dot} ${name}'s turn`;
+}
+
+// ── Powerup activation (human) ─────────────────────────────────────────────
+function activatePowerup(player) {
+  if (gameOver || player !== currentPlayer || aiThinking) return;
+  if (vsComputer && player === 2) return; // AI handles its own
+  const p = powerups[player];
+  if (!p || p.used) return;
+
+  if (p.target === 'auto') {
+    resolvePowerupAuto(player, p);
+    return;
+  }
+  p.selected = true;
+  activePowerup = { player, def: p };
+  document.getElementById('btn-cancel-power').style.display = '';
+  updateSidebars();
+  updateStatus();
+}
+
+function cancelPowerup() {
+  if (!activePowerup) return;
+  const p = powerups[activePowerup.player];
+  if (p) p.selected = false;
+  activePowerup = null;
+  document.getElementById('btn-cancel-power').style.display = 'none';
+  updateSidebars();
+  updateStatus();
+}
+
+function resolvePowerupAuto(player, p) {
+  p.used     = true;
+  p.selected = false;
+  activePowerup = null;
+  document.getElementById('btn-cancel-power').style.display = 'none';
+
+  if (p.id === 'doubleshot') {
+    doubleShotPending = 2;
+    toast(`${p.icon} Double Drop! Pick two columns.`);
+  } else if (p.id === 'extraturn') {
+    extraTurnPending = true;
+    toast(`${p.icon} Extra Turn granted!`);
+  } else if (p.id === 'gravity') {
+    gravityFlipped = !gravityFlipped;
+    toast(`${p.icon} Gravity flipped! Pieces now fall ${gravityFlipped ? 'up' : 'down'}.`);
+  } else if (p.id === 'refill') {
+    rollPowerup(player);
+    toast(`${p.icon} Rerolled — new powerup drawn!`);
+    updateSidebars();
+    return;
+  }
+  updateSidebars();
+  updateStatus();
+}
+
+// ── Click handlers ─────────────────────────────────────────────────────────
+function onColClick(c) {
+  if (gameOver || aiThinking) return;
+  if (vsComputer && currentPlayer === 2) return;
+
+  if (activePowerup && activePowerup.def.id === 'colclear') {
+    clearColumn(c);
+    finishPowerupUse();
+    return;
+  }
+  if (activePowerup) return;
+  dropPiece(c);
+}
+
+function onCellClick(e) {
+  if (gameOver || aiThinking) return;
+  if (vsComputer && currentPlayer === 2) return;
+  if (!activePowerup) return;
+
+  const r   = parseInt(e.currentTarget.dataset.r);
+  const c   = parseInt(e.currentTarget.dataset.c);
+  const def = activePowerup.def;
+
+  if (def.id === 'bomb') {
+    applyBomb(r, c);
+    finishPowerupUse();
+  } else if (def.id === 'rowclear') {
+    clearRow(r);
+    finishPowerupUse();
+  } else if (def.id === 'steal') {
+    const enemy = currentPlayer === 1 ? 2 : 1;
+    if (board[r][c] !== enemy)           { toast('Must click an enemy piece!'); return; }
+    if (shieldedCells.has(`${r},${c}`)) { toast('That piece is shielded!'); return; }
+    board[r][c] = currentPlayer;
+    renderBoard();
+    toast(`${def.icon} Stole a piece!`);
+    if (checkWin(currentPlayer)) { endGame(currentPlayer); return; }
+    finishPowerupUse();
+  } else if (def.id === 'shield') {
+    if (board[r][c] !== currentPlayer) { toast('Must click your own piece!'); return; }
+    shieldedCells.add(`${r},${c}`);
+    renderBoard();
+    toast(`${def.icon} Piece shielded!`);
+    finishPowerupUse();
+  }
+}
+
+function finishPowerupUse() {
+  const p = powerups[activePowerup.player];
+  if (p) { p.used = true; p.selected = false; }
+  activePowerup = null;
+  document.getElementById('btn-cancel-power').style.display = 'none';
+  endTurn();
+}
+
+// ── Drop logic ─────────────────────────────────────────────────────────────
+function dropPiece(c) {
+  if (isColFull(c)) { toast('Column is full!'); return; }
+  const row = findDropRow(c);
+  board[row][c] = currentPlayer;
+  renderBoard();
+  animateDrop(row, c);
+
+  if (checkWin(currentPlayer)) { endGame(currentPlayer); return; }
+  if (isBoardFull())           { endGame(0); return; }
+
+  if (doubleShotPending > 0) {
+    doubleShotPending--;
+    if (doubleShotPending > 0) { updateStatus(); return; }
+  }
+  endTurn();
+}
+
+function findDropRow(c) {
+  if (gravityFlipped) {
+    for (let r = 0; r < ROWS; r++)        { if (board[r][c] === 0) return r; }
+  } else {
+    for (let r = ROWS - 1; r >= 0; r--)   { if (board[r][c] === 0) return r; }
+  }
+  return -1;
+}
+
+function isColFull(c) { return board[0][c] !== 0 && board[ROWS-1][c] !== 0; }
+function isBoardFull() { for (let c = 0; c < COLS; c++) if (!isColFull(c)) return false; return true; }
+
+function animateDrop(r, c) {
+  const cells = document.querySelectorAll('.cell');
+  const idx   = r * COLS + c;
+  cells[idx].classList.add('dropping');
+  cells[idx].addEventListener('animationend', () => cells[idx].classList.remove('dropping'), { once: true });
+}
+
+// ── Turn management ────────────────────────────────────────────────────────
+function endTurn() {
+  if (extraTurnPending) {
+    extraTurnPending = false;
+    const name = (vsComputer && currentPlayer === 2) ? 'Computer' : `Player ${currentPlayer}`;
+    toast(`⏩ ${name} gets an extra turn!`);
+    rollPowerup(currentPlayer);
+    updateSidebars();
+    updateStatus();
+    if (vsComputer && currentPlayer === 2) triggerAI();
+    return;
+  }
+  currentPlayer = currentPlayer === 1 ? 2 : 1;
+  rollPowerup(currentPlayer);
+  updateSidebars();
+  updateStatus();
+  if (vsComputer && currentPlayer === 2) triggerAI();
+}
+
+// ── Powerup effects ────────────────────────────────────────────────────────
+function applyBomb(r, c) {
+  let blocked = false;
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      const nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+        if (shieldedCells.has(`${nr},${nc}`)) { blocked = true; continue; }
+        board[nr][nc] = 0;
+        shieldedCells.delete(`${nr},${nc}`);
+      }
+    }
+  }
+  applyGravity();
+  renderBoard();
+  toast(blocked ? '💣 Boom! (a shield blocked some)' : '💣 Boom!');
+}
+
+function clearColumn(c) {
+  let blocked = false;
+  for (let r = 0; r < ROWS; r++) {
+    if (shieldedCells.has(`${r},${c}`)) { blocked = true; continue; }
+    board[r][c] = 0;
+    shieldedCells.delete(`${r},${c}`);
+  }
+  applyGravity();
+  renderBoard();
+  toast(blocked ? '🌊 Column wiped! (shield held)' : '🌊 Column wiped!');
+}
+
+function clearRow(r) {
+  let blocked = false;
+  for (let c = 0; c < COLS; c++) {
+    if (shieldedCells.has(`${r},${c}`)) { blocked = true; continue; }
+    board[r][c] = 0;
+    shieldedCells.delete(`${r},${c}`);
+  }
+  applyGravity();
+  renderBoard();
+  toast(blocked ? '💥 Row blasted! (shield held)' : '💥 Row blasted!');
+}
+
+function applyGravity() {
+  for (let c = 0; c < COLS; c++) {
+    const pieces = [];
+    for (let r = 0; r < ROWS; r++) if (board[r][c] !== 0) pieces.push(board[r][c]);
+    for (let r = 0; r < ROWS; r++) board[r][c] = 0;
+    if (gravityFlipped) {
+      for (let i = 0; i < pieces.length; i++) board[i][c] = pieces[i];
+    } else {
+      const offset = ROWS - pieces.length;
+      for (let i = 0; i < pieces.length; i++) board[offset + i][c] = pieces[i];
+    }
+  }
+}
+
+// ── Win detection ──────────────────────────────────────────────────────────
+function checkWin(player) { return getWinCells(player).length > 0; }
+
+function getWinCells(player) {
+  const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      for (const [dr, dc] of dirs) {
+        const cells = [];
+        for (let k = 0; k < 4; k++) {
+          const nr = r+dr*k, nc = c+dc*k;
+          if (nr < 0||nr >= ROWS||nc < 0||nc >= COLS) break;
+          if (board[nr][nc] === player) cells.push([nr, nc]);
+        }
+        if (cells.length === 4) return cells;
+      }
+    }
+  }
+  return [];
+}
+
+function flashWin(player) {
+  getWinCells(player).forEach(([r,c]) => {
+    const el = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    if (el) el.classList.add('win-flash');
+  });
+}
+
+// ── Game over ──────────────────────────────────────────────────────────────
+function endGame(winner) {
+  gameOver   = true;
+  aiThinking = false;
+  updateArrows();
+  if (winner) {
+    scores[winner]++;
+    updateSidebars();
+    flashWin(winner);
+    setTimeout(() => showModal(winner), 600);
+  } else {
+    showModal(0);
+  }
+}
+
+function showModal(winner) {
+  const modal = document.getElementById('modal');
+  if (winner === 0) {
+    document.getElementById('modal-icon').textContent  = '🤝';
+    document.getElementById('modal-title').textContent = "It's a Draw!";
+    document.getElementById('modal-body').textContent  = 'The board is full. Try again!';
+  } else {
+    const name = (vsComputer && winner === 2) ? 'Computer' : `Player ${winner}`;
+    document.getElementById('modal-icon').textContent  = winner === 1 ? '🔴' : '🔵';
+    document.getElementById('modal-title').textContent = `${name} Wins!`;
+    document.getElementById('modal-body').textContent  = `Score — P1: ${scores[1]}  •  ${vsComputer ? 'CPU' : 'P2'}: ${scores[2]}`;
+  }
+  modal.classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── AI (Medium difficulty) ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+
+function triggerAI() {
+  if (gameOver || !vsComputer || currentPlayer !== 2) return;
+  aiThinking = true;
+  updateStatus();
+  updateArrows();
+  renderPowerupCard(2);
+  setTimeout(aiStep1, 750);
+}
+
+// Step 1: decide whether to use powerup
+function aiStep1() {
+  if (gameOver || currentPlayer !== 2) return;
+
+  const p = powerups[2];
+  if (p && !p.used && aiShouldUsePowerup(p)) {
+    const result = aiApplyPowerup(p);
+    if (result === 'ended') { aiThinking = false; return; }
+    // 'drop_now': fall through to aiStep2 with slight delay
+    setTimeout(aiStep2, 400);
+    return;
+  }
+  aiStep2();
+}
+
+// Step 2: drop a piece (handles doubleshot internally)
+function aiStep2() {
+  if (gameOver || currentPlayer !== 2) return;
+  const col = aiPickColumn();
+  if (col < 0) { aiThinking = false; endTurn(); return; }
+  aiThinking = false; // clear before dropPiece so endTurn can work
+  dropPiece(col);
+  // If doubleShot still pending (AI dropped once, needs to drop again)
+  if (!gameOver && doubleShotPending > 0) {
+    aiThinking = true;
+    updateStatus();
+    setTimeout(aiStep2, 600);
+  }
+}
+
+// ── AI powerup decision ────────────────────────────────────────────────────
+function aiShouldUsePowerup(p) {
+  const hasEnemy = () => { for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) if(board[r][c]===1) return true; return false; };
+  const hasOwn   = () => { for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) if(board[r][c]===2) return true; return false; };
+
+  if (p.id === 'extraturn')  return true;
+  if (p.id === 'doubleshot') return Math.random() > 0.25;
+  if (p.id === 'gravity')    return Math.random() > 0.65;
+  if (p.id === 'refill')     return Math.random() > 0.55;
+  if (p.id === 'bomb')       return hasEnemy() && Math.random() > 0.30;
+  if (p.id === 'colclear')   return hasEnemy() && Math.random() > 0.30;
+  if (p.id === 'rowclear')   return hasEnemy() && Math.random() > 0.30;
+  if (p.id === 'steal')      return hasEnemy() && Math.random() > 0.20;
+  if (p.id === 'shield')     return hasOwn()   && Math.random() > 0.55;
+  return false;
+}
+
+// Returns 'ended' (turn consumed) or 'drop_now' (still need to drop)
+function aiApplyPowerup(p) {
+  p.used = true; p.selected = false;
+
+  // ── Auto powerups ──
+  if (p.id === 'extraturn') {
+    extraTurnPending = true;
+    toast(`${p.icon} Computer: Extra Turn!`);
+    updateSidebars(); updateStatus();
+    return 'drop_now';
+  }
+  if (p.id === 'doubleshot') {
+    doubleShotPending = 2;
+    toast(`${p.icon} Computer: Double Drop!`);
+    updateSidebars(); updateStatus();
+    return 'drop_now';
+  }
+  if (p.id === 'gravity') {
+    gravityFlipped = !gravityFlipped;
+    toast(`${p.icon} Computer flipped gravity!`);
+    updateSidebars(); updateStatus();
+    return 'drop_now';
+  }
+  if (p.id === 'refill') {
+    rollPowerup(2);
+    toast(`${p.icon} Computer rerolled powerup`);
+    updateSidebars(); updateStatus();
+    return 'drop_now'; // skip using new powerup to avoid recursion
+  }
+
+  // ── Targeted powerups (end the turn) ──
+  if (p.id === 'bomb') {
+    const target = aiFindBombTarget();
+    if (target) {
+      applyBomb(target[0], target[1]);
+      updateSidebars();
+      aiThinking = false;
+      endTurn();
+      return 'ended';
+    }
+  }
+  if (p.id === 'colclear') {
+    const col = aiFindBestColClear();
+    if (col >= 0) {
+      clearColumn(col);
+      updateSidebars();
+      aiThinking = false;
+      endTurn();
+      return 'ended';
+    }
+  }
+  if (p.id === 'rowclear') {
+    const row = aiFindBestRowClear();
+    if (row >= 0) {
+      clearRow(row);
+      updateSidebars();
+      aiThinking = false;
+      endTurn();
+      return 'ended';
+    }
+  }
+  if (p.id === 'steal') {
+    const target = aiFindBestSteal();
+    if (target) {
+      board[target[0]][target[1]] = 2;
+      renderBoard();
+      toast(`🪄 Computer stole a piece!`);
+      if (checkWin(2)) { endGame(2); return 'ended'; }
+      updateSidebars();
+      aiThinking = false;
+      endTurn();
+      return 'ended';
+    }
+  }
+  if (p.id === 'shield') {
+    const target = aiFindBestShield();
+    if (target) {
+      shieldedCells.add(`${target[0]},${target[1]}`);
+      renderBoard();
+      toast(`🛡️ Computer shielded a piece!`);
+      updateSidebars();
+      aiThinking = false;
+      endTurn();
+      return 'ended';
+    }
+  }
+
+  // No valid target found — just drop
+  return 'drop_now';
+}
+
+// ── Minimax column picker ──────────────────────────────────────────────────
+function aiPickColumn() {
+  // 18% chance of a random move (medium difficulty)
+  if (Math.random() < 0.18) {
+    const valid = [];
+    for (let c = 0; c < COLS; c++) if (!isColFull(c)) valid.push(c);
+    return valid.length ? valid[Math.floor(Math.random() * valid.length)] : -1;
+  }
+
+  let bestScore = -Infinity;
+  let bestCols  = [];
+  // Try centre-out order for tie-breaking
+  const order = [3,2,4,1,5,0,6];
+
+  for (const c of order) {
+    if (isColFull(c)) continue;
+    const row = findDropRow(c);
+    board[row][c] = 2;
+    const score = minimax(4, false, -Infinity, Infinity);
+    board[row][c] = 0;
+    if (score > bestScore) { bestScore = score; bestCols = [c]; }
+    else if (score === bestScore) bestCols.push(c);
+  }
+  return bestCols.length ? bestCols[Math.floor(Math.random() * bestCols.length)] : -1;
+}
+
+function minimax(depth, isMax, alpha, beta) {
+  if (checkWin(2)) return  100000 + depth;
+  if (checkWin(1)) return -(100000 + depth);
+  if (isBoardFull() || depth === 0) return evaluateBoard();
+
+  if (isMax) {
+    let best = -Infinity;
+    for (let c = 0; c < COLS; c++) {
+      if (isColFull(c)) continue;
+      const row = findDropRow(c);
+      board[row][c] = 2;
+      best  = Math.max(best, minimax(depth-1, false, alpha, beta));
+      board[row][c] = 0;
+      alpha = Math.max(alpha, best);
+      if (beta <= alpha) break;
+    }
+    return best;
+  } else {
+    let best = Infinity;
+    for (let c = 0; c < COLS; c++) {
+      if (isColFull(c)) continue;
+      const row = findDropRow(c);
+      board[row][c] = 1;
+      best = Math.min(best, minimax(depth-1, true, alpha, beta));
+      board[row][c] = 0;
+      beta = Math.min(beta, best);
+      if (beta <= alpha) break;
+    }
+    return best;
+  }
+}
+
+function evaluateBoard() {
+  let score = 0;
+  // Centre column bonus
+  const mid = Math.floor(COLS / 2);
+  for (let r = 0; r < ROWS; r++) {
+    if (board[r][mid] === 2) score += 3;
+    if (board[r][mid] === 1) score -= 3;
+    if (mid-1 >= 0) { if (board[r][mid-1] === 2) score += 1; if (board[r][mid+1] === 2) score += 1; }
+  }
+  // Window scoring
+  const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      for (const [dr,dc] of dirs) {
+        const win = [];
+        let ok = true;
+        for (let k = 0; k < 4; k++) {
+          const nr = r+dr*k, nc = c+dc*k;
+          if (nr<0||nr>=ROWS||nc<0||nc>=COLS) { ok=false; break; }
+          win.push(board[nr][nc]);
+        }
+        if (ok) score += scoreWindow(win);
+      }
+    }
+  }
+  return score;
+}
+
+function scoreWindow(w) {
+  const ai    = w.filter(v=>v===2).length;
+  const human = w.filter(v=>v===1).length;
+  const empty = w.filter(v=>v===0).length;
+  if (ai===4)              return  1000;
+  if (human===4)           return -1000;
+  if (ai===3 && empty===1) return    50;
+  if (human===3&&empty===1)return   -90; // prioritise blocking
+  if (ai===2 && empty===2) return    10;
+  if (human===2&&empty===2)return   -15;
+  return 0;
+}
+
+// ── AI powerup target finders ──────────────────────────────────────────────
+function aiFindBombTarget() {
+  let best = -1, target = null;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (board[r][c] === 0) continue;
+      let humanCount = 0;
+      for (let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++) {
+        const nr=r+dr, nc=c+dc;
+        if (nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&board[nr][nc]===1&&!shieldedCells.has(`${nr},${nc}`)) humanCount++;
+      }
+      if (humanCount > best) { best = humanCount; target = [r,c]; }
+    }
+  }
+  return best > 0 ? target : null;
+}
+
+function aiFindBestColClear() {
+  let best=-1, col=-1;
+  for (let c=0;c<COLS;c++) {
+    let n=0;
+    for (let r=0;r<ROWS;r++) if(board[r][c]===1&&!shieldedCells.has(`${r},${c}`)) n++;
+    if (n>best) { best=n; col=c; }
+  }
+  return best>0 ? col : -1;
+}
+
+function aiFindBestRowClear() {
+  let best=-1, row=-1;
+  for (let r=0;r<ROWS;r++) {
+    let n=0;
+    for (let c=0;c<COLS;c++) if(board[r][c]===1&&!shieldedCells.has(`${r},${c}`)) n++;
+    if (n>best) { best=n; row=r; }
+  }
+  return best>0 ? row : -1;
+}
+
+function aiFindBestSteal() {
+  let best=-Infinity, target=null;
+  for (let r=0;r<ROWS;r++) {
+    for (let c=0;c<COLS;c++) {
+      if (board[r][c]!==1||shieldedCells.has(`${r},${c}`)) continue;
+      board[r][c]=2;
+      const s = evaluateBoard();
+      board[r][c]=1;
+      if (s>best) { best=s; target=[r,c]; }
+    }
+  }
+  return target;
+}
+
+function aiFindBestShield() {
+  let best=-Infinity, target=null;
+  for (let r=0;r<ROWS;r++) {
+    for (let c=0;c<COLS;c++) {
+      if (board[r][c]!==2||shieldedCells.has(`${r},${c}`)) continue;
+      board[r][c]=0;
+      const without=evaluateBoard();
+      board[r][c]=2;
+      const diff=evaluateBoard()-without;
+      if (diff>best) { best=diff; target=[r,c]; }
+    }
+  }
+  return target;
+}
+
+// ── Bootstrap ──────────────────────────────────────────────────────────────
+scores = { 1: 0, 2: 0 };
+initGame();
+</script>
+</body>
+</html>
