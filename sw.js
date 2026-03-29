@@ -1,4 +1,4 @@
-const CACHE = 'weather-v1';
+const CACHE = 'weather-v2';
 const ASSETS = ['./weather.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
