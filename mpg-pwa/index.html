@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Market Performance Group (MPG) is a leading omnichannel commerce consulting firm helping CPG brands create the best PATH FORWARD — from market strategy to in-market reality." />
+  <meta name="theme-color" content="#0D1F3C" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Market Performance Group | Omnichannel Commerce Consulting" />
+  <meta property="og:description" content="Creating the best PATH FORWARD — from market strategy to in-market reality. MPG's 400+ professionals help the world's fastest-growing CPG brands compete and win." />
+  <meta property="og:url" content="https://www.marketperformancegroup.com/" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MPG" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/tokens.css" />
+  <link rel="stylesheet" href="./css/base.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+
+  <title>Market Performance Group | Omnichannel Commerce Consulting</title>
+
+  <style>
+    /* ── Home Hero ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-mid) 60%, #0f2d5e 100%);
+      position: relative;
+      overflow: hidden;
+      padding-top: var(--header-h);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.018) 0px,
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px,
+          transparent 48px
+        );
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -120px;
+      right: -100px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(29,111,235,0.14) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      padding-block: var(--space-24);
+    }
+
+    .hero-content {
+      max-width: 780px;
+    }
+
+    .hero h1 {
+      color: #fff;
+      margin-bottom: var(--space-6);
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+    }
+
+    .hero h1 span {
+      color: var(--color-accent-glow);
+    }
+
+    .hero-lead {
+      font-size: clamp(var(--text-base), 2vw, var(--text-lg));
+      color: rgba(255,255,255,0.78);
+      line-height: var(--leading-relaxed);
+      max-width: 640px;
+      margin-bottom: var(--space-8);
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-12);
+    }
+
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: var(--space-8);
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      padding-right: var(--space-8);
+      margin-right: var(--space-8);
+      border-right: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero-stat:last-child {
+      border-right: none;
+      padding-right: 0;
+      margin-right: 0;
+    }
+
+    .hero-stat-value {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-extrabold);
+      color: #fff;
+    }
+
+    .hero-stat-label {
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 480px) {
+      .hero-stats { gap: var(--space-6); }
+      .hero-stat {
+        border-right: none;
+        padding-right: 0;
+        margin-right: 0;
+      }
+    }
+
+    /* ── About Teaser ─────────────────────────────────────── */
+    .about-teaser-left {
+      background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-mid) 100%);
+      border-radius: var(--radius-xl);
+      padding: var(--space-10);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .about-teaser-left blockquote {
+      font-size: clamp(var(--text-xl), 2vw, var(--text-3xl));
+      font-weight: var(--font-extrabold);
+      color: #fff;
+      line-height: var(--leading-snug);
+      margin-bottom: var(--space-4);
+    }
+
+    .about-teaser-left blockquote span {
+      color: var(--color-accent-glow);
+    }
+
+    .about-teaser-left cite {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.50);
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .about-teaser-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-6);
+    }
+
+    .about-teaser-right .section-title {
+      font-size: clamp(var(--text-2xl), 2.5vw, var(--text-3xl));
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="site-header site-header--transparent" role="banner">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="MPG — Home">
+        <span class="logo-mark">MPG</span>
+        <span class="logo-text">Market Performance Group</span>
+      </a>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <ul role="list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">Our Company</a></li>
+          <li><a href="services.html">What We Do</a></li>
+          <li><a href="contact.html" class="btn btn-primary btn-sm">Contact Us</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-expanded="false"
+              aria-controls="mobile-menu"
+              aria-label="Toggle navigation">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
+    <nav id="mobile-menu" class="mobile-nav" aria-label="Mobile navigation" hidden>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Our Company</a></li>
+        <li><a href="services.html">What We Do</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ── Hero ─────────────────────────────────────────── -->
+    <section class="hero" aria-label="Hero">
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <span class="eyebrow eyebrow--light">Omnichannel Commerce Consulting</span>
+          <h1>Creating the Best<br><span>Path Forward</span></h1>
+          <p class="hero-lead">
+            From market strategy to in-market reality — MPG's 400+ professionals
+            help the world's fastest-growing CPG brands compete and win
+            across every channel.
+          </p>
+          <div class="hero-ctas">
+            <a href="contact.html" class="btn btn-primary btn-lg">Get in Touch</a>
+            <a href="services.html" class="btn btn-outline-light btn-lg">What We Do &rarr;</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="hero-stat-value">400+</span>
+              <span class="hero-stat-label">Professionals</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">20+</span>
+              <span class="hero-stat-label">Years Experience</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">6</span>
+              <span class="hero-stat-label">Service Lines</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">2002</span>
+              <span class="hero-stat-label">Founded</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Services Preview ──────────────────────────────── -->
+    <section class="section" aria-labelledby="services-heading">
+      <div class="container">
+        <header class="section-header">
+          <span class="eyebrow">What We Do</span>
+          <h2 class="section-title" id="services-heading">End-to-End Capabilities</h2>
+          <p class="section-subtitle">Integrated solutions across the entire commerce lifecycle — from strategy to execution.</p>
+        </header>
+        <div class="grid-services">
+
+          <article class="service-card">
+            <div class="service-card-icon" aria-hidden="true">📊</div>
+            <div>
+              <h3>Strategy &amp; Business Consulting</h3>
+              <p>Market entry, competitive analysis, annual planning, and joint business planning to drive profitable growth.</p>
+            </div>
+            <a href="services.html#strategy" class="card-link">Learn more &rarr;</a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-card-icon" aria-hidden="true">🛒</div>
+            <div>
+              <h3>Omnichannel Strategy &amp; Services</h3>
+              <p>Shopper marketing, digital shelf optimization, and channel strategy across mass, club, drug, and e-commerce.</p>
+            </div>
+            <a href="services.html#omnichannel" class="card-link">Learn more &rarr;</a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-card-icon" aria-hidden="true">📈</div>
+            <div>
+              <h3>Business Analytics &amp; Insights</h3>
+              <p>Category management, syndicated data analysis, consumer insights, and performance dashboards that fuel decisions.</p>
+            </div>
+            <a href="services.html#analytics" class="card-link">Learn more &rarr;</a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-card-icon" aria-hidden="true">📣</div>
+            <div>
+              <h3>Consumer Marketing &amp; Retail Activation</h3>
+              <p>In-store and digital promotions, shopper engagement programs, and brand campaigns that move product.</p>
+            </div>
+            <a href="services.html#marketing" class="card-link">Learn more &rarr;</a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-card-icon" aria-hidden="true">📦</div>
+            <div>
+              <h3>Order to Cash / 3PL</h3>
+              <p>Supply chain consulting, demand planning, and logistics coordination from order management to cash conversion.</p>
+            </div>
+            <a href="services.html#otc" class="card-link">Learn more &rarr;</a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-card-icon" aria-hidden="true">⚡</div>
+            <div>
+              <h3>FleXforce<sup>®</sup></h3>
+              <p>Plug-and-play embedded staffing solutions — fractional experts and dedicated field teams for any capability gap.</p>
+            </div>
+            <a href="services.html#flexforce" class="card-link">Learn more &rarr;</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Trust Band ─────────────────────────────────────── -->
+    <section class="section section--alt" aria-labelledby="trust-heading">
+      <div class="container">
+        <header class="section-header">
+          <span class="eyebrow">Why MPG</span>
+          <h2 class="section-title" id="trust-heading">Built for Today's Commerce Landscape</h2>
+        </header>
+        <div class="grid-3">
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">🎯</div>
+            <h3>Strategy to Execution</h3>
+            <p>We don't just hand you a plan — we embed alongside your team to turn strategy into in-market results.</p>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">🌐</div>
+            <h3>Omnichannel Expertise</h3>
+            <p>Deep relationships with the world's largest retailers — from Walmart and Target to Amazon and beyond.</p>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">📊</div>
+            <h3>Proven Results</h3>
+            <p>Two decades of accelerating profitable growth for the fastest-growing CPG manufacturers in every category.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── About Teaser ───────────────────────────────────── -->
+    <section class="section" aria-labelledby="about-teaser-heading">
+      <div class="container">
+        <div class="two-col">
+          <div class="about-teaser-left">
+            <blockquote>
+              "Creating the best <span>PATH FORWARD</span> — from market strategy to in-market reality."
+            </blockquote>
+            <cite>Market Performance Group</cite>
+          </div>
+          <div class="about-teaser-right">
+            <div>
+              <span class="eyebrow">Our Story</span>
+              <h2 class="section-title" id="about-teaser-heading">Two Decades of Commerce Leadership</h2>
+              <p>Founded in 2002, MPG has grown to become one of the most trusted omnichannel commerce agencies for Consumer Packaged Goods manufacturers. With over 400 strategy and commercialization professionals, we bring unmatched depth across every facet of modern retail.</p>
+              <p style="margin-top: var(--space-4);">In 2024, MPG was acquired by Sentinel Capital Partners, further expanding our capabilities to serve brands competing in the next era of AI-driven retail transformation.</p>
+            </div>
+            <a href="about.html" class="btn btn-secondary">Meet Our Company &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CTA Banner ─────────────────────────────────────── -->
+    <section class="cta-banner" aria-labelledby="cta-heading">
+      <div class="container">
+        <h2 id="cta-heading">Ready to Find Your Path Forward?</h2>
+        <p>Let's discuss how MPG can help accelerate your brand's growth across every channel.</p>
+        <a href="contact.html" class="btn btn-primary btn-lg">Contact Us Today</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark">MPG</span>
+        <p>Creating the best PATH FORWARD — from market strategy to in-market reality for CPG brands.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <p class="footer-col-heading">Navigation</p>
+        <ul role="list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">Our Company</a></li>
+          <li><a href="services.html">What We Do</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="footer-contact" aria-label="Contact information">
+        <p class="footer-col-heading">Contact</p>
+        <ul class="footer-contact-list" role="list">
+          <li>Princeton Junction, NJ</li>
+          <li><a href="mailto:info@marketperformancegroup.com">info@marketperformancegroup.com</a></li>
+          <li><a href="https://www.linkedin.com/company/market-performance-group" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2025 Market Performance Group. All rights reserved.</p>
+        <a href="https://www.marketperformancegroup.com" target="_blank" rel="noopener noreferrer">marketperformancegroup.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/nav.js" defer></script>
+  <script src="./js/pwa.js" defer></script>
+</body>
+</html>

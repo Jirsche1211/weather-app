@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0D1F3C"/>
+  <!-- Background subtle pattern -->
+  <rect x="0" y="0" width="512" height="512" rx="96" fill="url(#bg-pattern)" opacity="0.04"/>
+  <!-- Accent bar -->
+  <rect x="96" y="342" width="320" height="22" rx="11" fill="#1D6FEB"/>
+  <!-- MPG wordmark -->
+  <text x="256" y="312"
+        font-size="156"
+        font-family="Arial, Helvetica, sans-serif"
+        font-weight="800"
+        text-anchor="middle"
+        fill="#FFFFFF"
+        letter-spacing="-6">MPG</text>
+  <!-- Subtle tagline -->
+  <text x="256" y="400"
+        font-size="22"
+        font-family="Arial, Helvetica, sans-serif"
+        font-weight="500"
+        text-anchor="middle"
+        fill="rgba(255,255,255,0.40)"
+        letter-spacing="3">MARKET PERFORMANCE GROUP</text>
+</svg>

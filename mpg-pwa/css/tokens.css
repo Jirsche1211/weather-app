@@ -1,0 +1,100 @@
+/* ============================================================
+   MPG Design Tokens
+   Market Performance Group — CSS Custom Properties
+   ============================================================ */
+
+:root {
+
+  /* ── Brand Colors ─────────────────────────────────────────── */
+  --color-navy:        #0D1F3C;
+  --color-navy-deep:   #071529;
+  --color-navy-mid:    #1A3560;
+
+  --color-accent:      #1D6FEB;
+  --color-accent-dark: #1558C0;
+  --color-accent-glow: #3D8FF5;
+
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  --color-surface:       #FFFFFF;
+  --color-surface-alt:   #F4F7FB;
+  --color-surface-card:  #FFFFFF;
+  --color-border:        #DDE4EF;
+  --color-border-light:  #EEF1F7;
+
+  /* ── Text ─────────────────────────────────────────────────── */
+  --color-text-primary:   #0D1F3C;
+  --color-text-secondary: #4A5568;
+  --color-text-muted:     #8A96A8;
+  --color-text-inverse:   #FFFFFF;
+
+  /* ── Semantic ─────────────────────────────────────────────── */
+  --color-success: #16A34A;
+  --color-error:   #DC2626;
+  --color-warning: #D97706;
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont,
+               'Segoe UI', Helvetica, Arial, sans-serif;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+  --text-6xl:  3.75rem;
+
+  --leading-tight:   1.2;
+  --leading-snug:    1.35;
+  --leading-normal:  1.6;
+  --leading-relaxed: 1.75;
+
+  --font-normal:    400;
+  --font-medium:    500;
+  --font-semibold:  600;
+  --font-bold:      700;
+  --font-extrabold: 800;
+
+  /* ── Spacing ──────────────────────────────────────────────── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ── Layout ───────────────────────────────────────────────── */
+  --container-max: 1200px;
+  --container-pad: var(--space-6);
+  --section-py:    var(--space-20);
+
+  /* ── Radius ───────────────────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ──────────────────────────────────────────────── */
+  --shadow-sm:   0 1px 3px rgba(13,31,60,0.08), 0 1px 2px rgba(13,31,60,0.06);
+  --shadow-md:   0 4px 12px rgba(13,31,60,0.10), 0 2px 6px rgba(13,31,60,0.07);
+  --shadow-lg:   0 10px 30px rgba(13,31,60,0.14), 0 4px 12px rgba(13,31,60,0.08);
+  --shadow-card: 0 2px 8px rgba(13,31,60,0.08);
+
+  /* ── Transitions ──────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* ── Header Height (for offset calculations) ──────────────── */
+  --header-h: 72px;
+}

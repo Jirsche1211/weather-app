@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Get in touch with Market Performance Group. Let's discuss how MPG can help accelerate your brand's growth across every channel." />
+  <meta name="theme-color" content="#0D1F3C" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Contact Us | Market Performance Group" />
+  <meta property="og:description" content="Connect with MPG's team of omnichannel commerce experts. We're based in Princeton Junction, NJ and typically respond within one business day." />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MPG" />
+
+  <link rel="stylesheet" href="./css/tokens.css" />
+  <link rel="stylesheet" href="./css/base.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+
+  <title>Contact Us | Market Performance Group</title>
+
+  <style>
+    /* ── Contact page two-col layout adjustment ─────────── */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-12);
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .contact-layout {
+        grid-template-columns: 1fr;
+      }
+      /* Stack info panel below form on mobile */
+      .contact-layout > .contact-info-panel {
+        order: -1;
+      }
+    }
+
+    /* ── Form section heading ───────────────────────────── */
+    .contact-form-section h2 {
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-2);
+    }
+
+    .contact-form-section > p {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-8);
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="MPG — Home">
+        <span class="logo-mark">MPG</span>
+        <span class="logo-text">Market Performance Group</span>
+      </a>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <ul role="list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">Our Company</a></li>
+          <li><a href="services.html">What We Do</a></li>
+          <li><a href="contact.html" class="btn btn-primary btn-sm">Contact Us</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-expanded="false"
+              aria-controls="mobile-menu"
+              aria-label="Toggle navigation">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
+    <nav id="mobile-menu" class="mobile-nav" aria-label="Mobile navigation" hidden>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Our Company</a></li>
+        <li><a href="services.html">What We Do</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ── Page Hero ────────────────────────────────────── -->
+    <section class="page-hero" aria-label="Page header">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span class="breadcrumb-current" aria-current="page">Contact</span>
+        </nav>
+        <span class="eyebrow eyebrow--light">Reach Out</span>
+        <h1>Get in Touch</h1>
+        <p>Let's discuss how MPG can help accelerate your brand's growth across every channel.</p>
+      </div>
+    </section>
+
+    <!-- ── Contact Section ───────────────────────────────── -->
+    <section class="section" aria-labelledby="contact-heading">
+      <div class="container">
+        <div class="contact-layout">
+
+          <!-- Form Column -->
+          <div class="contact-form-section">
+            <h2 id="contact-heading">Send Us a Message</h2>
+            <p>Fill out the form below and a member of our team will be in touch within one business day.</p>
+
+            <form id="contact-form"
+                  class="contact-form"
+                  novalidate
+                  aria-label="Contact MPG">
+
+              <div style="display:flex;flex-direction:column;gap:var(--space-5);">
+
+                <div class="form-row form-row--split">
+                  <div class="form-group">
+                    <label for="cf-name">Full Name <span aria-hidden="true">*</span></label>
+                    <input
+                      type="text"
+                      id="cf-name"
+                      name="name"
+                      autocomplete="name"
+                      required
+                      aria-required="true"
+                      aria-describedby="cf-name-error"
+                      placeholder="Jane Smith"
+                    />
+                    <span id="cf-name-error" class="form-error" role="alert" aria-live="polite"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="cf-email">Work Email <span aria-hidden="true">*</span></label>
+                    <input
+                      type="email"
+                      id="cf-email"
+                      name="email"
+                      autocomplete="email"
+                      required
+                      aria-required="true"
+                      aria-describedby="cf-email-error"
+                      placeholder="jane@company.com"
+                    />
+                    <span id="cf-email-error" class="form-error" role="alert" aria-live="polite"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="cf-company">Company Name <span aria-hidden="true">*</span></label>
+                  <input
+                    type="text"
+                    id="cf-company"
+                    name="company"
+                    autocomplete="organization"
+                    required
+                    aria-required="true"
+                    aria-describedby="cf-company-error"
+                    placeholder="Acme CPG Brands"
+                  />
+                  <span id="cf-company-error" class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="cf-topic">Area of Interest</label>
+                  <select id="cf-topic" name="topic" autocomplete="off">
+                    <option value="">Select a service area&hellip;</option>
+                    <option value="strategy">Strategy &amp; Business Consulting</option>
+                    <option value="omnichannel">Omnichannel Strategy &amp; Services</option>
+                    <option value="analytics">Business Analytics &amp; Insights</option>
+                    <option value="marketing">Consumer Marketing &amp; Retail Activation</option>
+                    <option value="otc">Order to Cash / 3PL</option>
+                    <option value="flexforce">FleXforce&#174; Staffing Solutions</option>
+                    <option value="other">Other / General Inquiry</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="cf-message">Message <span aria-hidden="true">*</span></label>
+                  <textarea
+                    id="cf-message"
+                    name="message"
+                    rows="5"
+                    required
+                    aria-required="true"
+                    aria-describedby="cf-message-error"
+                    placeholder="Tell us about your brand and how we can help&hellip;"
+                  ></textarea>
+                  <span id="cf-message-error" class="form-error" role="alert" aria-live="polite"></span>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary btn-lg" id="cf-submit">
+                    <span class="btn-text">Send Message</span>
+                    <span class="btn-spinner" aria-hidden="true" hidden></span>
+                  </button>
+                </div>
+
+              </div><!-- end flex wrapper -->
+
+            </form>
+
+            <div id="form-success" class="form-success" role="status" aria-live="polite" hidden>
+              <p>&#10003; Thank you! Your message has been sent. We'll be in touch within one business day.</p>
+            </div>
+          </div>
+
+          <!-- Info Panel Column -->
+          <aside class="contact-info-panel" aria-label="Contact information">
+            <h3>Contact MPG</h3>
+
+            <div class="contact-info-item">
+              <span class="info-label">Office</span>
+              <span class="info-value">Princeton Junction, NJ 08550</span>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="info-label">Email</span>
+              <a href="mailto:info@marketperformancegroup.com" class="info-value">
+                info@marketperformancegroup.com
+              </a>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="info-label">Connect</span>
+              <a
+                href="https://www.linkedin.com/company/market-performance-group"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="info-value"
+              >
+                LinkedIn &rarr;
+              </a>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="info-label">Response Time</span>
+              <span class="info-value">Within one business day</span>
+            </div>
+
+            <div class="contact-tagline">
+              <p>"Creating the best PATH FORWARD — from market strategy to in-market reality."</p>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Why Connect ────────────────────────────────────── -->
+    <section class="section section--alt" aria-labelledby="why-connect-heading">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title" id="why-connect-heading">What Happens Next</h2>
+          <p class="section-subtitle">Our process is straightforward — we move fast and focus on your goals.</p>
+        </header>
+        <div class="grid-3">
+
+          <div class="approach-card">
+            <div class="approach-card-icon" aria-hidden="true">💬</div>
+            <h3>Discovery Call</h3>
+            <p>We start with a focused conversation to understand your brand, your challenges, and your growth objectives.</p>
+          </div>
+
+          <div class="approach-card">
+            <div class="approach-card-icon" aria-hidden="true">🗺️</div>
+            <h3>Tailored Proposal</h3>
+            <p>Based on your needs, we'll develop a customized engagement proposal — scoped, staffed, and priced for your situation.</p>
+          </div>
+
+          <div class="approach-card">
+            <div class="approach-card-icon" aria-hidden="true">🚀</div>
+            <h3>Rapid Onboarding</h3>
+            <p>Once aligned, our teams mobilize quickly — often embedding within days to begin delivering impact immediately.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark">MPG</span>
+        <p>Creating the best PATH FORWARD — from market strategy to in-market reality for CPG brands.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <p class="footer-col-heading">Navigation</p>
+        <ul role="list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">Our Company</a></li>
+          <li><a href="services.html">What We Do</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="footer-contact" aria-label="Contact information">
+        <p class="footer-col-heading">Contact</p>
+        <ul class="footer-contact-list" role="list">
+          <li>Princeton Junction, NJ</li>
+          <li><a href="mailto:info@marketperformancegroup.com">info@marketperformancegroup.com</a></li>
+          <li><a href="https://www.linkedin.com/company/market-performance-group" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2025 Market Performance Group. All rights reserved.</p>
+        <a href="https://www.marketperformancegroup.com" target="_blank" rel="noopener noreferrer">marketperformancegroup.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/nav.js" defer></script>
+  <script src="./js/pwa.js" defer></script>
+  <script src="./js/contact.js" defer></script>
+</body>
+</html>

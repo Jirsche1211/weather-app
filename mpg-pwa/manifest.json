@@ -1,0 +1,41 @@
+{
+  "name": "Market Performance Group",
+  "short_name": "MPG",
+  "description": "Creating the best PATH FORWARD — omnichannel commerce consulting for CPG brands.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0D1F3C",
+  "theme_color": "#0D1F3C",
+  "categories": ["business", "productivity"],
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "What We Do",
+      "short_name": "Services",
+      "url": "./services.html",
+      "description": "View MPG's service offerings"
+    },
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "url": "./contact.html",
+      "description": "Get in touch with MPG"
+    }
+  ]
+}
